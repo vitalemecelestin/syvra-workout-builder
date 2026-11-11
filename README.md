@@ -128,6 +128,8 @@ cd web && npm test   # custom hook useFetch + composant ExercisesPage
   réutilisée telle quelle (`api/api/index.js`), et le `DATABASE_URL` vit en variable
   d'environnement, jamais dans le code.
 - **CI GitHub Actions** : les tests tournent à chaque push, le badge en haut montre l'état.
+- **Couleurs de la marque Syvra** : la palette du site (marine `#00274D`, bleu `#095573`,
+  sarcelle `#75cbc4`, menthe `#a8e6cf`) est reprise en variables CSS dans `web/src/styles.css`.
 
 ## ⏭️ Avec plus de temps
 
