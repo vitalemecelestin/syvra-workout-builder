@@ -1,0 +1,7 @@
+# Sécurité : jamais de secrets ni de node_modules dans Git
+node_modules/
+.env
+.env.*
+!.env.example
+dist/
+*.log

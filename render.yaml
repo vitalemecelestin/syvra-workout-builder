@@ -1,0 +1,12 @@
+# Déploiement de l'API sur Render (optionnel : tu peux aussi le faire via le dashboard).
+# Render lit ce fichier et crée un "Web Service" à partir du dossier api/.
+services:
+  - type: web
+    name: syvra-workout-api
+    runtime: node
+    rootDir: api
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false   # à remplir dans le dashboard Render (secret, jamais dans Git)
