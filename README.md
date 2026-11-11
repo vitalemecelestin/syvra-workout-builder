@@ -2,18 +2,18 @@
 
 Petite application full-stack pour gérer des **séances d'entraînement** et leurs **exercices**, avec une relation **plusieurs-à-plusieurs** (un même exercice sert dans plusieurs séances, chaque fois avec ses propres séries/répétitions).
 
-## 🔗 Liens (à remplir après déploiement)
+## 🔗 Liens
 
-- **Site (front)** : https://_________.vercel.app
-- **API** : https://_________.onrender.com
-- **Dépôt GitHub** : https://github.com/_________/syvra-workout-builder
+- **Site (front)** : https://syvra-workout-web.vercel.app
+- **API** : https://syvra-workout-api.vercel.app/api/health
+- **Dépôt GitHub** : https://github.com/Netstar123/syvra-workout-builder
 
 ## 🧱 Architecture
 
 | Couche | Techno | Hébergement |
 |---|---|---|
 | Base de données | PostgreSQL | Neon |
-| API REST | Node.js + Express + `pg` | Render |
+| API REST | Node.js + Express + `pg` | Vercel (fonction serverless) |
 | Front-end | React (Vite) + React Router | Vercel |
 | Tests | Vitest | — |
 
@@ -74,6 +74,7 @@ route (exercises.js)  ──►  ExerciseRepository.findAll()  ──►  SQL  �
 
 | Méthode | Route | Rôle |
 |---|---|---|
+| GET | `/api/health` | vérifie que l'API tourne |
 | GET | `/api/exercises` | liste (filtre `?muscle_group=`) |
 | GET | `/api/exercises/:id` | un exercice + séances qui l'utilisent |
 | POST/PUT/DELETE | `/api/exercises/:id` | CRUD exercice |

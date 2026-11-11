@@ -11,7 +11,9 @@ export function createApp() {
   app.use(express.json());  // parse le corps JSON des requêtes
 
   // Petite route de santé (pratique pour vérifier que l'API tourne).
-  app.get('/', (req, res) => res.json({ status: 'ok', service: 'syvra-workout-api' }));
+  const health = (req, res) => res.json({ status: 'ok', service: 'syvra-workout-api' });
+  app.get('/', health);
+  app.get('/api/health', health);
 
   app.use('/api/exercises', exercisesRouter);
   app.use('/api/workouts', workoutsRouter);
