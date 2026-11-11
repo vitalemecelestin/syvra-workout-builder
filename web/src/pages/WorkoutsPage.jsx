@@ -9,8 +9,16 @@ export default function WorkoutsPage() {
   const { data: workouts, loading, error, reload } = useFetch('/api/workouts');
   const [form, setForm] = useState(EMPTY);
   const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [formError, setFormError] = useState(null);
+
+  function closeForm() {
+    setShowForm(false);
+    setEditingId(null);
+    setForm(EMPTY);
+    setFormError(null);
+  }
 
   async function submit(e) {
     e.preventDefault();
@@ -19,8 +27,7 @@ export default function WorkoutsPage() {
     try {
       if (editingId) await api.put(`/api/workouts/${editingId}`, form);
       else await api.post('/api/workouts', form);
-      setForm(EMPTY);
-      setEditingId(null);
+      closeForm();
       reload();
     } catch (err) {
       setFormError(err.message);
@@ -38,24 +45,42 @@ export default function WorkoutsPage() {
   function startEdit(w) {
     setEditingId(w.id);
     setForm({ name: w.name, description: w.description || '' });
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (
     <div>
-      <h1>Séances</h1>
-
-      <form className="card" onSubmit={submit}>
-        <strong>{editingId ? 'Modifier la séance' : 'Nouvelle séance'}</strong>
-        <label>Nom</label>
-        <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-        <label>Description</label>
-        <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        {formError && <p className="error">{formError}</p>}
-        <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn-primary" disabled={busy}>{editingId ? 'Enregistrer' : 'Ajouter'}</button>
-          {editingId && <button type="button" onClick={() => { setEditingId(null); setForm(EMPTY); }}>Annuler</button>}
+      <div className="page-head">
+        <div>
+          <h1>Séances</h1>
+          <p className="subtitle">Composez vos entraînements à partir de la bibliothèque d’exercices.</p>
         </div>
-      </form>
+        {!showForm && (
+          <button className="btn-primary" onClick={() => setShowForm(true)}>+ Nouvelle séance</button>
+        )}
+      </div>
+
+      {showForm && (
+        <form className="card form-card" onSubmit={submit}>
+          <h3>{editingId ? 'Modifier la séance' : 'Nouvelle séance'}</h3>
+          <div className="form-grid">
+            <div>
+              <label htmlFor="w-name">Nom</label>
+              <input id="w-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required autoFocus />
+            </div>
+            <div>
+              <label htmlFor="w-desc">Description</label>
+              <input id="w-desc" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            </div>
+          </div>
+          {formError && <p className="error">{formError}</p>}
+          <div className="form-actions">
+            <button className="btn-primary" disabled={busy}>{editingId ? 'Enregistrer' : 'Ajouter'}</button>
+            <button type="button" className="btn-ghost" onClick={closeForm}>Annuler</button>
+          </div>
+        </form>
+      )}
 
       {loading && <div className="state">Chargement…</div>}
       {error && <div className="state error">Erreur : {error}</div>}
@@ -63,12 +88,16 @@ export default function WorkoutsPage() {
 
       <div className="grid">
         {(workouts || []).map((w) => (
-          <div className="card" key={w.id}>
+          <div className="card item" key={w.id}>
             <div className="row">
-              <Link to={`/workouts/${w.id}`}><strong>{w.name}</strong></Link>
+              <Link to={`/workouts/${w.id}`} className="item-title">{w.name}</Link>
+              <span className="badge">
+                {w.exercise_count ?? 0} exercice{(w.exercise_count ?? 0) > 1 ? 's' : ''}
+              </span>
             </div>
-            {w.description && <p style={{ color: 'var(--muted)' }}>{w.description}</p>}
-            <div className="row">
+            <p className="item-desc">{w.description || '—'}</p>
+            <div className="item-actions">
+              <Link to={`/workouts/${w.id}`} className="btn-link">Ouvrir →</Link>
               <button onClick={() => startEdit(w)}>Modifier</button>
               <button className="btn-danger" onClick={() => remove(w.id)}>Supprimer</button>
             </div>

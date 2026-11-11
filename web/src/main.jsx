@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom';
 import './styles.css';
 
 import ExercisesPage from './pages/ExercisesPage';
@@ -11,19 +11,27 @@ import WorkoutDetailPage from './pages/WorkoutDetailPage';
 function App() {
   return (
     <BrowserRouter>
-      <nav className="nav">
-        <span className="brand">Syvra<span> Fitness</span></span>
-        <Link to="/">Exercices</Link>
-        <Link to="/workouts">Séances</Link>
-      </nav>
-      <div className="container">
+      <header className="header">
+        <nav className="nav">
+          <Link to="/" className="brand">
+            <span className="brand-logo">S</span>
+            Syvra<span>Fitness</span>
+          </Link>
+          <div className="nav-links">
+            <NavLink to="/" end>Exercices</NavLink>
+            <NavLink to="/workouts">Séances</NavLink>
+          </div>
+        </nav>
+      </header>
+      <main className="container">
         <Routes>
           <Route path="/" element={<ExercisesPage />} />
           <Route path="/exercises/:id" element={<ExerciseDetailPage />} />
           <Route path="/workouts" element={<WorkoutsPage />} />
           <Route path="/workouts/:id" element={<WorkoutDetailPage />} />
         </Routes>
-      </div>
+      </main>
+      <footer className="footer">Syvra Fitness · Workout Builder</footer>
     </BrowserRouter>
   );
 }

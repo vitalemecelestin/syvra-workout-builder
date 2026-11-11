@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
+import { muscleStyle } from '../muscles';
 
 // Page "détail exercice" : montre l'exercice ET les séances qui l'utilisent
 // (l'autre côté de la relation plusieurs-à-plusieurs).
@@ -13,21 +14,26 @@ export default function ExerciseDetailPage() {
 
   return (
     <div>
-      <p><Link to="/">← Retour aux exercices</Link></p>
-      <h1>{exercise.name}</h1>
-      <p><span className="badge">{exercise.muscle_group}</span></p>
-      {exercise.description && <p>{exercise.description}</p>}
+      <Link to="/" className="back">← Retour aux exercices</Link>
+      <div className="page-head">
+        <div>
+          <h1>{exercise.name}</h1>
+          {exercise.description && <p className="subtitle">{exercise.description}</p>}
+        </div>
+        <span className="badge badge-lg" style={muscleStyle(exercise.muscle_group)}>{exercise.muscle_group}</span>
+      </div>
 
-      <h2>Séances qui utilisent cet exercice</h2>
-      {exercise.workouts.length === 0 && <div className="state">Aucune séance.</div>}
+      <h2>Utilisé dans {exercise.workouts.length} séance{exercise.workouts.length > 1 ? 's' : ''}</h2>
+      {exercise.workouts.length === 0 && <div className="card state">Cet exercice n’est encore dans aucune séance.</div>}
       <div className="grid">
         {exercise.workouts.map((w) => (
-          <div className="card" key={w.id}>
-            <div className="row">
-              <Link to={`/workouts/${w.id}`}><strong>{w.name}</strong></Link>
-              <span className="badge">{w.sets} × {w.reps}</span>
-            </div>
-          </div>
+          <Link to={`/workouts/${w.id}`} className="card item item-link" key={w.id}>
+            <span className="item-title">{w.name}</span>
+            <span className="volume">
+              <strong>{w.sets}</strong> séries × <strong>{w.reps}</strong> répétitions
+            </span>
+            <span className="btn-link">Voir la séance →</span>
+          </Link>
         ))}
       </div>
     </div>

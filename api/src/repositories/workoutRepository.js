@@ -2,8 +2,16 @@
 import { query } from '../db.js';
 
 export const WorkoutRepository = {
+  // Liste des séances avec le nombre d'exercices de chacune (LEFT JOIN :
+  // une séance sans exercice apparaît quand même, avec 0).
   async findAll() {
-    const { rows } = await query('SELECT * FROM workouts ORDER BY name');
+    const { rows } = await query(
+      `SELECT w.*, COUNT(we.id)::int AS exercise_count
+         FROM workouts w
+         LEFT JOIN workout_exercises we ON we.workout_id = w.id
+        GROUP BY w.id
+        ORDER BY w.name`
+    );
     return rows;
   },
 

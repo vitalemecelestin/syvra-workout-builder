@@ -11,12 +11,15 @@ import { WorkoutRepository } from '../src/repositories/workoutRepository.js';
 describe('WorkoutRepository', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('findAll() renvoie les séances triées par nom', async () => {
-    const fake = [{ id: 1, name: 'Leg Day' }, { id: 2, name: 'Push Day' }];
+  it('findAll() renvoie les séances triées par nom avec leur nombre d’exercices', async () => {
+    const fake = [{ id: 1, name: 'Leg Day', exercise_count: 4 }, { id: 2, name: 'Push Day', exercise_count: 0 }];
     query.mockResolvedValue({ rows: fake });
 
     expect(await WorkoutRepository.findAll()).toEqual(fake);
-    expect(query.mock.calls[0][0]).toContain('ORDER BY name');
+    const sql = query.mock.calls[0][0];
+    expect(sql).toContain('LEFT JOIN workout_exercises');
+    expect(sql).toContain('COUNT(we.id)');
+    expect(sql).toContain('ORDER BY w.name');
   });
 
   it('findById() renvoie undefined si la séance n’existe pas', async () => {
