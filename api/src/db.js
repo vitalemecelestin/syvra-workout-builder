@@ -3,6 +3,9 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
 
+// Le CLI Neon écrit les variables dans .env.local ; on le charge en priorité,
+// puis .env en secours. En production (Render), process.env est déjà rempli.
+dotenv.config({ path: '.env.local' });
 dotenv.config();
 
 const { Pool } = pg;
