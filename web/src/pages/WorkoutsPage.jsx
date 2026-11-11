@@ -10,16 +10,20 @@ export default function WorkoutsPage() {
   const [form, setForm] = useState(EMPTY);
   const [editingId, setEditingId] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [formError, setFormError] = useState(null);
 
   async function submit(e) {
     e.preventDefault();
     setBusy(true);
+    setFormError(null);
     try {
       if (editingId) await api.put(`/api/workouts/${editingId}`, form);
       else await api.post('/api/workouts', form);
       setForm(EMPTY);
       setEditingId(null);
       reload();
+    } catch (err) {
+      setFormError(err.message);
     } finally {
       setBusy(false);
     }
@@ -46,6 +50,7 @@ export default function WorkoutsPage() {
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
         <label>Description</label>
         <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        {formError && <p className="error">{formError}</p>}
         <div className="row" style={{ marginTop: 12 }}>
           <button className="btn-primary" disabled={busy}>{editingId ? 'Enregistrer' : 'Ajouter'}</button>
           {editingId && <button type="button" onClick={() => { setEditingId(null); setForm(EMPTY); }}>Annuler</button>}

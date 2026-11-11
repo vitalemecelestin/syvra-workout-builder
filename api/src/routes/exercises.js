@@ -45,6 +45,9 @@ router.post('/', async (req, res, next) => {
 // PUT /api/exercises/:id  -> modifier
 router.put('/:id', async (req, res, next) => {
   try {
+    if (!req.body.name || !req.body.muscle_group) {
+      return res.status(400).json({ error: 'name et muscle_group sont requis.' });
+    }
     const updated = await ExerciseRepository.update(req.params.id, req.body);
     if (!updated) return res.status(404).json({ error: 'Exercice introuvable.' });
     res.json(updated);

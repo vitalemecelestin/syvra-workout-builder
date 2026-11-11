@@ -1,5 +1,7 @@
 # Syvra Workout Builder
 
+[![CI](https://github.com/Netstar123/syvra-workout-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/Netstar123/syvra-workout-builder/actions/workflows/ci.yml)
+
 Petite application full-stack pour gérer des **séances d'entraînement** et leurs **exercices**, avec une relation **plusieurs-à-plusieurs** (un même exercice sert dans plusieurs séances, chaque fois avec ses propres séries/répétitions).
 
 ## 🔗 Liens
@@ -106,9 +108,33 @@ npm run dev        # http://localhost:5173
 ## 🧪 Tests
 
 ```bash
-cd api && npm test   # tests des repositories (base simulée)
-cd web && npm test   # test du custom hook useFetch
+cd api && npm test   # repositories (exercices + table de jonction, base simulée)
+cd web && npm test   # custom hook useFetch + composant ExercisesPage
 ```
+
+## 🧠 Décisions techniques
+
+- **Séries/répétitions dans la table de jonction**, pas dans `exercises` : le même exercice
+  peut être « 4 × 8 » dans une séance et « 3 × 12 » dans une autre.
+- **Contrainte `UNIQUE (workout_id, exercise_id)`** côté base, et non seulement côté code :
+  la base reste cohérente même si deux requêtes arrivent en même temps. Le repository
+  traduit la violation (code Postgres `23505`) en réponse **409 Conflict** avec un message clair.
+- **Validation dans les routes, SQL dans les repositories** : chaque couche a une seule
+  responsabilité (séries/reps doivent être des entiers positifs → `400`).
+- **Suppression en cascade** (`ON DELETE CASCADE`) : supprimer une séance ou un exercice
+  nettoie automatiquement ses lignes de jonction.
+- **Requêtes paramétrées** (`$1`, `$2`…) partout : aucune injection SQL possible.
+- **API en fonction serverless (Vercel)** : pas de serveur à maintenir, l'app Express est
+  réutilisée telle quelle (`api/api/index.js`), et le `DATABASE_URL` vit en variable
+  d'environnement, jamais dans le code.
+- **CI GitHub Actions** : les tests tournent à chaque push, le badge en haut montre l'état.
+
+## ⏭️ Avec plus de temps
+
+- Authentification (comptes utilisateurs, séances privées)
+- Réordonner les exercices d'une séance par glisser-déposer (colonne `position`)
+- Pagination et recherche par nom
+- Tests d'intégration de bout en bout contre une base de test (branche Neon dédiée)
 
 ## 🤖 Outils IA utilisés
 

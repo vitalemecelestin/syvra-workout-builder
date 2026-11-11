@@ -5,6 +5,9 @@ import { WorkoutExerciseRepository } from '../repositories/workoutExerciseReposi
 
 const router = Router();
 
+// Séries et répétitions doivent être des entiers strictement positifs.
+const isPositiveInt = (v) => Number.isInteger(Number(v)) && Number(v) > 0;
+
 // GET /api/workouts  -> liste des séances
 router.get('/', async (req, res, next) => {
   try {
@@ -33,6 +36,7 @@ router.post('/', async (req, res, next) => {
 // PUT /api/workouts/:id  -> modifier
 router.put('/:id', async (req, res, next) => {
   try {
+    if (!req.body.name) return res.status(400).json({ error: 'name est requis.' });
     const updated = await WorkoutRepository.update(req.params.id, req.body);
     if (!updated) return res.status(404).json({ error: 'Séance introuvable.' });
     res.json(updated);
@@ -57,6 +61,9 @@ router.post('/:id/exercises', async (req, res, next) => {
     if (!exercise_id || sets == null || reps == null) {
       return res.status(400).json({ error: 'exercise_id, sets et reps sont requis.' });
     }
+    if (!isPositiveInt(sets) || !isPositiveInt(reps)) {
+      return res.status(400).json({ error: 'sets et reps doivent être des entiers positifs.' });
+    }
     const link = await WorkoutExerciseRepository.add(req.params.id, req.body);
     res.status(201).json(link);
   } catch (err) { next(err); }
@@ -65,6 +72,10 @@ router.post('/:id/exercises', async (req, res, next) => {
 // PUT /api/workouts/:id/exercises/:linkId  -> modifier sets/reps d'un lien
 router.put('/:id/exercises/:linkId', async (req, res, next) => {
   try {
+    const { sets, reps } = req.body;
+    if (!isPositiveInt(sets) || !isPositiveInt(reps)) {
+      return res.status(400).json({ error: 'sets et reps doivent être des entiers positifs.' });
+    }
     const updated = await WorkoutExerciseRepository.update(req.params.linkId, req.body);
     if (!updated) return res.status(404).json({ error: 'Lien introuvable.' });
     res.json(updated);
