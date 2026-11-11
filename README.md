@@ -1,6 +1,6 @@
 # Syvra Workout Builder
 
-[![CI](https://github.com/Netstar123/syvra-workout-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/Netstar123/syvra-workout-builder/actions/workflows/ci.yml)
+[![CI](https://github.com/vitaleme/syvra-workout-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/vitaleme/syvra-workout-builder/actions/workflows/ci.yml)
 
 Petite application full-stack pour gérer des **séances d'entraînement** et leurs **exercices**, avec une relation **plusieurs-à-plusieurs** (un même exercice sert dans plusieurs séances, chaque fois avec ses propres séries/répétitions).
 
@@ -8,7 +8,7 @@ Petite application full-stack pour gérer des **séances d'entraînement** et le
 
 - **Site (front)** : https://syvra-workout-web.vercel.app
 - **API** : https://syvra-workout-api.vercel.app/api/health
-- **Dépôt GitHub** : https://github.com/Netstar123/syvra-workout-builder
+- **Dépôt GitHub** : https://github.com/vitaleme/syvra-workout-builder
 
 ## 🧱 Architecture
 
